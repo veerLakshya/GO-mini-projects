@@ -1,0 +1,32 @@
+What is WebRTC?
+    - technology which enables web apps and sites to capture and optionally stream audio/or video media as well as to exchange
+      arbitary data between browers without requiring an intermediary
+
+    - works by exchanging offers and answers between 2 peers, this negotiation is called Signalling (mostly websocket server)
+    - after signalling, peers exchange p2p connectivity information using something called ICE Candidates
+    - Offers, Answers are expressed using the Session Description Protocol (SDP), kindoff used to describe the device on this
+
+
+Signalling, SDP and WebSockets-
+    - the process of signalling can be done with any medium. you can even tweet the offer.
+    - but in serious terms, we usually use a websocket server because of its duplex communication capabilities.
+      We can use regular HTTP, but we'll have to use long polling.
+
+Session Description Protocol (SDP)-
+    - the configuration of an endpoint on a webRTC connection is called a seesion description. It is expressed using the SDP.
+    - the description includes information about the kind of media being send, its format, the transer protocol being used,
+      the endpoint's IP addredd and port, and other information needed to describe a media transfer endpoint
+    - Offers and Answers are special descriptions
+    - Each peer keeps two descriptions on hand: the local description, describing itself,
+      and the remote description, describing the other end of the call.
+
+What happend when the "Peers Connect"
+    - once the negotiation is done, we try to establish a p2p connection
+    - an external service is usually used for discovering the possible candidates for connecting a peer.(trying to find a path in the graph)
+    - this service is called ICE (Interactive connectivity establishment) and is using either a STUN or a TURN server.
+    - STUN stands for Session Traversal Utilities for NAT, and is usually used indirectly in most WebRTC applications.
+
+ICE Candidates -
+    - ice candidates detail the available methods the peer is able to communicate(directly or through a TURN server)
+    - typically each peer will propose its best candidates first, making their way down the line toward their worse candidates.
+    - ideally candidates are UDP(since its faster and media streams are able to recover from interuptions) but ICE standard allow TCP as well.
