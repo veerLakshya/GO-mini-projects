@@ -3,16 +3,25 @@ package main
 import (
 	"log"
 	"net/http"
-	"webrtc-app/server"
+	"webrtc-app/internal/application"
+	"webrtc-app/internal/infra"
+	"webrtc-app/internal/transport/handler"
 )
 
 func main() {
-	server.AllRooms.Init()
+	roomRepo := infra.NewInMemoryRoomRepository()
+	clientRepo := infra.NewInMemoryClientRepository()
 
-	log.Println("all rooms", server.AllRooms.Map)
+	roomService := application.NewRoomService(roomRepo)
+	clientService := application.NewClientService(clientRepo)
 
-	http.HandleFunc("/create", server.CreateRoomRequestHandler)
-	http.HandleFunc("/join", server.JoinRoomRequestHandler)
+	clientHandler := handler.NewClientHandler(clientService)
+	roomHandler := handler.NewRoomHandler(roomService)
+
+	http.HandleFunc("/create", roomHandler.CreateRoomRequestHandler)
+	http.HandleFunc("POST /join/{id}", roomHandler.JoinRoomRequestHandler)
+
+	http.HandleFunc("/client/create", clientHandler.CreateClientHandler)
 
 	log.Println("starting server on port 8000")
 	err := http.ListenAndServe(":8000", nil)

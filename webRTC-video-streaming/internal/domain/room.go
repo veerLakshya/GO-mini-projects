@@ -1,4 +1,4 @@
-package server
+package domain
 
 import (
 	"sync"
@@ -60,5 +60,4 @@ func (r *Room) RemoveClient(id uuid.UUID) {
 			return
 		}
 	}
-
 }
