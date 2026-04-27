@@ -2,6 +2,8 @@ package server
 
 import (
 	"sync"
+
+	"github.com/gorilla/websocket"
 )
 
 type RoomsMap struct {
@@ -50,4 +52,19 @@ func (r *RoomsMap) DeleteRoom(roomId string) bool {
 
 	delete(r.Map, roomId)
 	return true
+}
+
+func (r *RoomsMap) InsertIntoRoom(roomId string, host bool, conn *websocket.Conn) {
+	r.Mutex.Lock()
+	defer r.Mutex.Unlock()
+
+	c := NewClient(host, conn)
+
+	room, ok := r.Map[roomId]
+	if !ok {
+		// room not found
+		return
+	}
+
+	room.AddClient(*c)
 }
